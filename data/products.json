@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "id": "2bd0f2dc-5f55-45ab-a5ab-b9b22281c16a",
+    "title": "Auriculares Inalámbricos",
+    "description": "Auriculares Bluetooth con cancelación de ruido y estuche de carga.",
+    "code": "AUR12345",
+    "price": 7999,
+    "status": true,
+    "stock": 25,
+    "category": "Electrónica",
+    "thumbnails": [
+      "https://example.com/images/auriculares1.png",
+      "https://example.com/images/auriculares2.png"
+    ]
+  }
+]
