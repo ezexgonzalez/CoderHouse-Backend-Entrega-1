@@ -8,7 +8,7 @@ Persistencia en **File System** (`products.json` y `carts.json`).
 ## 🚀 Instalación y uso
 1. Clonar este repositorio:
    ```bash
-   git clone https://github.com/TU-USUARIO/backend-ecommerce-entrega1.git
+   git clone https://github.com/TU-USUARIO/CoderHouse-Backend-Entrega-1.git
    cd backend-ecommerce-entrega1
    ```
 
