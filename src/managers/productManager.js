@@ -36,9 +36,10 @@ class ProductManager{
         }
     }
 
-    async getProdudcts(){
+    async getProducts(){
         try{
-            const products =  await this.getDataFile();
+            const data =  await this.getDataFile();
+            const products = [...data];
             return products;
         }catch(error){
             return error.message;
@@ -70,7 +71,7 @@ class ProductManager{
 
             await fs.writeFile(this.pathFile, JSON.stringify(filteredProduct, null, 2) , "utf-8");
 
-            return { message : "Producto eliminado correctamente", products: filteredProduct};
+            return filteredProduct;
         } catch (error) {
             return error.message;
         }

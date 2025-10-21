@@ -2,12 +2,12 @@ import { Router } from "express";
 import ProductManager from "../managers/productManager.js";
 
 const router = Router();
-const productManager = new ProductManager("./data/products.json");
+const productManager = new ProductManager("./src/data/products.json");
 
 // get all
 router.get("/", async (req,res)=>{
     try {
-        const products = await productManager.getProdudcts();
+        const products = await productManager.getProducts();
         res.json({message: "Lista de prodcutos", products});
     } catch (error) {
         res.status(404).json({error:error});
@@ -52,8 +52,14 @@ router.put("/:pid", async(req, res)=>{
 
 router.delete("/:pid", async (req,res) =>{
     try {
-        const deleted = await productManager.deleteProductById(req.params.pid);
-        res.status(202).json({mesagge:"Producto eliminado"});
+        if(await productManager.getProductById(req.params.pid)){
+            const deleted = await productManager.deleteProductById(req.params.pid);
+            res.status(202).json({product: deleted, mesagge:"Producto eliminado"});
+
+        }else{
+            res.status(404).json({error:"El producto seleccionado no existe"});
+        }
+        
 
     } catch (error) {
         res.status(404).json({error:error});
