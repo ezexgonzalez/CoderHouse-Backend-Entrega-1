@@ -2,8 +2,9 @@
 
 <ul id="productsList">
   {{#each products}}
-    <li id="{{this.id}}">{{this.title}} - ${{this.price}} 
-        <button onclick="deleteProduct('{{this.id}}')">Eliminar</button>
+    <li data-id="{{this.id}}">
+      {{this.title}} - ${{this.price}} 
+      <button onclick="deleteProduct('{{this.id}}')">Eliminar</button>
     </li>
   {{/each}}
 </ul>
@@ -34,8 +35,8 @@
     socket.emit("deleteProduct", id);
   }
 
+  // Actualizar lista en tiempo real
   socket.on("products", (products) => {
-    console.log(products)
     const list = document.getElementById("productsList");
     list.innerHTML = "";
     products.forEach(p => {
