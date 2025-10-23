@@ -2,6 +2,7 @@ import express from "express";
 import productRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import http from "http";
+import connectDB from './config/db.js';
 import { Server } from "socket.io";
 import { engine } from "express-handlebars";
 import viewsRouter from "./routes/views.router.js";
@@ -9,10 +10,19 @@ import ProductManager from "./managers/productManager.js";
 
 
 const app = express();
+const PORT = 8080;
+
+//Conexión a MongoDB
+connectDB();
+
 const server = http.createServer(app);
 const io = new Server(server);
 
 const productManager = new ProductManager("./data/products.json");
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use( express.static("public"));
 
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");

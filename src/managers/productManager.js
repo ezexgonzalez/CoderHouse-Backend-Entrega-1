@@ -1,97 +1,54 @@
-import crypto from "crypto";
-import e from "express";
-import { utimes } from "fs";
-import fs from "fs/promises";
+import ProductModel from '../models/product.model.js';
 
-class ProductManager{
-    constructor(pathFile){
-        this.pathFile = pathFile;
+class ProductManager {
+  async getProducts(limit) {
+    try {
+      if (limit) {
+        return await ProductModel.find().limit(limit).lean();
+      }
+      return await ProductModel.find().lean();
+    } catch (error) {
+      console.error('Error al obtener los productos:', error);
+      throw error;
     }
+  }
 
-    generateNewId(){
-        return crypto.randomUUID();
+  async getProductById(id) {
+    try {
+      return await ProductModel.findById(id).lean();
+    } catch (error) {
+      console.error('Error al obtener producto por ID:', error);
+      throw error;
     }
+  }
 
-    async getDataFile(){
-        const fileData = await fs.readFile(this.pathFile, "utf-8");
-        const products = JSON.parse(fileData);
-
-        return products;
+  async addProduct(productData) {
+    try {
+      const product = await ProductModel.create(productData);
+      return product;
+    } catch (error) {
+      console.error('Error al agregar producto:', error);
+      throw error;
     }
+  }
 
-    async addProduct(newProduct){
-        try{
-            const products = await this.getDataFile();
-            const newId = this.generateNewId();
-
-            const product = {id: newId, ...newProduct};
-            products.push(product);
-
-            await fs.writeFile( this.pathFile, JSON.stringify(products, null, 2), "utf-8");
-            
-            return {message: "Producto añadido correctamente"};
-
-        }catch(error){
-            return error.message;
-        }
+  async updateProduct(id, data) {
+    try {
+      return await ProductModel.updateOne({ _id: id }, { $set: data });
+    } catch (error) {
+      console.error('Error al actualizar producto:', error);
+      throw error;
     }
+  }
 
-    async getProducts(){
-        try{
-            const data =  await this.getDataFile();
-            const products = [...data];
-            return products;
-        }catch(error){
-            return error.message;
-        }
+  async deleteProduct(id) {
+    try {
+      return await ProductModel.deleteOne({ _id: id });
+    } catch (error) {
+      console.error('Error al eliminar producto:', error);
+      throw error;
     }
-
-    async updateProductById(productId, updates){
-        try {
-            const products = await this.getDataFile();
-            const indexProduct = products.findIndex((product)=> product.id === productId);
-            if(indexProduct === -1) throw new Error("Producto no encontrado");
-
-            products[indexProduct] = {...products[indexProduct], ...updates}
-
-            await fs.writeFile(this.pathFile, JSON.stringify(products, null, 2), "utf-8");
-
-            return products[indexProduct];
-            
-        } catch (error) {
-            return error.message;
-        }
-    }
-
-    async deleteProductById(productId){
-        try {
-            const products = await this.getDataFile();
-
-            const filteredProduct = products.filter(product => product.id !== productId);
-
-            await fs.writeFile(this.pathFile, JSON.stringify(filteredProduct, null, 2) , "utf-8");
-
-            return filteredProduct;
-        } catch (error) {
-            return error.message;
-        }
-        
-
-
-    }
-
-    async getProductById(productId){
-        try {
-            const products = await this.getDataFile();
-            const product = products.find((p) => p.id === productId);
-            return product;
-        } catch (error) {
-           return error.message;
-        }
-    } 
-
-
-
+  }
 } 
 
 

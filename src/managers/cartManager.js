@@ -1,52 +1,95 @@
-import { promises as fs } from "fs";
+import CartModel from '../models/cart.model.js';
 
 class CartManager {
-    constructor(path) {
-        this.path = path;
+  async createCart() {
+    try {
+      const newCart = await CartModel.create({ products: [] });
+      return newCart;
+    } catch (error) {
+      console.error('Error al crear carrito:', error);
+      throw error;
     }
-    generateNewId() {
-        return crypto.randomUUID();
+  }
+
+  async getCartById(cid) {
+    try {
+      // populate para traer productos completos
+      return await CartModel.findById(cid).populate('products.product').lean();
+    } catch (error) {
+      console.error('Error al obtener carrito:', error);
+      throw error;
     }
+  }
 
-    async getDataFile() {
-        const fileData = await fs.readFile(this.path, "utf-8");
-        const products = JSON.parse(fileData);
-        return products;
+  async addProductToCart(cid, pid) {
+    try {
+      const cart = await CartModel.findById(cid);
+      if (!cart) return null;
+
+      const productIndex = cart.products.findIndex(p => p.product.toString() === pid);
+
+      if (productIndex !== -1) {
+        cart.products[productIndex].quantity++;
+      } else {
+        cart.products.push({ product: pid, quantity: 1 });
+      }
+
+      await cart.save();
+      return cart;
+    } catch (error) {
+      console.error('Error al agregar producto al carrito:', error);
+      throw error;
     }
+  }
 
-    async writeFile(data) {
-        await fs.writeFile(this.path, JSON.stringify(data, null, 2));
+  async deleteProductFromCart(cid, pid) {
+    try {
+      const cart = await CartModel.findById(cid);
+      if (!cart) return null;
+
+      cart.products = cart.products.filter(p => p.product.toString() !== pid);
+      await cart.save();
+      return cart;
+    } catch (error) {
+      console.error('Error al eliminar producto del carrito:', error);
+      throw error;
     }
+  }
 
-    async createCart() {
-        const carts = await this.getDataFile();
-        const id = this.generateNewId();
-        const newCart = { id, products: [] };
-        carts.push(newCart);
-        await this.writeFile(carts);
-        return newCart;
+  async updateCart(cid, products) {
+    try {
+      return await CartModel.updateOne({ _id: cid }, { $set: { products } });
+    } catch (error) {
+      console.error('Error al actualizar carrito:', error);
+      throw error;
     }
+  }
 
-    async getCartById(id) {
-        const carts = await this.getDataFile();
-        return carts.find((c) => c.id === id);
+  async updateProductQuantity(cid, pid, quantity) {
+    try {
+      const cart = await CartModel.findById(cid);
+      if (!cart) return null;
+
+      const product = cart.products.find(p => p.product.toString() === pid);
+      if (!product) return null;
+
+      product.quantity = quantity;
+      await cart.save();
+      return cart;
+    } catch (error) {
+      console.error('Error al actualizar cantidad de producto:', error);
+      throw error;
     }
+  }
 
-    async addProductToCart(cid, pid) {
-        const carts = await this.getDataFile();
-        const cart = carts.find((c) => c.id === cid);
-        if (!cart) return null;
-
-        const productIndex = cart.products.findIndex((p) => p.product === pid);
-        if (productIndex !== -1) {
-            cart.products[productIndex].quantity++;
-        } else {
-            cart.products.push({ product: pid, quantity: 1 });
-        }
-
-        await this.writeFile(carts);
-        return cart;
+  async clearCart(cid) {
+    try {
+      return await CartModel.updateOne({ _id: cid }, { $set: { products: [] } });
+    } catch (error) {
+      console.error('Error al vaciar carrito:', error);
+      throw error;
     }
+  }
 }
 
 export default CartManager;
