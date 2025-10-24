@@ -7,7 +7,9 @@ import { Server } from "socket.io";
 import { engine } from "express-handlebars";
 import viewsRouter from "./routes/views.router.js";
 import ProductManager from "./managers/productManager.js";
+import dotenv from "dotenv";
 
+dotenv.config();
 
 const app = express();
 const PORT = 8080;
@@ -26,7 +28,7 @@ app.use( express.static("public"));
 
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
-app.set("views", "./views");
+app.set("views", "./src/views");
 
 // Routes
 
@@ -60,6 +62,6 @@ io.on("connection", async (socket) => {
   });
 });
 
-server.listen(8080,() =>{
+server.listen(PORT,() =>{
     console.log("Servidor inciado correctamente");
 });

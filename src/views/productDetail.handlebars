@@ -1,0 +1,34 @@
+<h1>{{product.title}}</h1>
+
+<p>{{product.description}}</p>
+<p><strong>Precio:</strong> ${{product.price}}</p>
+<p><strong>Categoría:</strong> {{product.category}}</p>
+<p><strong>Stock:</strong> {{product.stock}}</p>
+
+<form id="addToCartForm">
+  <input type="hidden" id="productId" value="{{product._id}}">
+  <button type="submit">Agregar al carrito</button>
+</form>
+
+<a href="/products">Volver a productos</a>
+
+<script>
+  const form = document.getElementById("addToCartForm");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const productId = document.getElementById("productId").value;
+
+   
+
+    try {
+      const res = await fetch(`/api/carts/${}/products/${productId}`, {
+        method: "POST",
+      });
+      const data = await res.json();
+      alert("Producto agregado al carrito");
+    } catch (error) {
+      console.error(error);
+      alert("Error al agregar producto");
+    }
+  });
+</script>
