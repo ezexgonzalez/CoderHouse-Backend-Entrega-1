@@ -40,25 +40,24 @@ app.use("/", viewsRouter);
 // API/PRODUCTS
 
 io.on("connection", async (socket) => {
-  console.log("Nuevo cliente conectado");
+  console.log("🟢 Nuevo cliente conectado");
 
   // Enviar productos iniciales
-    const products = await productManager.getProducts()
-    socket.emit("products", products);
-  
+  const products = await productManager.getProducts();
+  socket.emit("products", products);
 
-  // Agregar producto desde cliente
+  // Agregar producto
   socket.on("newProduct", async (data) => {
     await productManager.addProduct(data);
-    const products = await productManager.getProducts();
-    io.emit("products", products); // actualizar todos los clientes
+    const updatedProducts = await productManager.getProducts();
+    io.emit("products", updatedProducts); // actualizar todos los clientes
   });
 
-  // Eliminar producto desde cliente
+  // Eliminar producto
   socket.on("deleteProduct", async (id) => {
     await productManager.deleteProductById(id);
-    const products = await productManager.getProducts();
-    io.emit("products", products);
+    const updatedProducts = await productManager.getProducts();
+    io.emit("products", updatedProducts); // actualizar todos los clientes
   });
 });
 

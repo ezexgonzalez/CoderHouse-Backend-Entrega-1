@@ -32,7 +32,7 @@ class ProductManager {
     }
   }
 
-  async updateProduct(id, data) {
+  async updateProductById(id, data) {
     try {
       return await ProductModel.updateOne({ _id: id }, { $set: data });
     } catch (error) {
@@ -41,7 +41,7 @@ class ProductManager {
     }
   }
 
-  async deleteProduct(id) {
+  async deleteProductById(id) {
     try {
       return await ProductModel.deleteOne({ _id: id });
     } catch (error) {

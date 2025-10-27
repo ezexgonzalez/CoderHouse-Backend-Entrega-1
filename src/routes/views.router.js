@@ -15,7 +15,6 @@ viewsRouter.get("/", async (req, res) => {
 // Vista realtimeproducts
 viewsRouter.get("/realtimeproducts", async (req, res) => {
   const products = await productManager.getProducts();
-  console.log(products);
   res.render("realTimeProducts",  {products});
 });
 
