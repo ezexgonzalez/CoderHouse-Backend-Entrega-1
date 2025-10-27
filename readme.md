@@ -19,65 +19,31 @@ Backend de e-commerce desarrollado con **Node.js**, **Express** y **MongoDB**, q
 
 ---
 
-## Instalación
+## Instalación y ejecución
+
 1. Clonar el repositorio:
-```bash
+- bash
 git clone https://github.com/ezexgonzalez/CoderHouse-Backend-Entrega-1.git
 cd CoderHouse-Backend-Entrega-1
-Instalar dependencias:
 
-bash
-Copiar código
-npm install
-Configurar .env:
+## Endpoints principales
+- Productos
 
-ini
-Copiar código
-MONGO_URL=<tu_mongo_atlas_uri>
-PORT=8080
-Ejecutar el servidor:
-
-bash
-Copiar código
-npm start
-Servidor: http://localhost:8080
-
-Endpoints principales
-Productos
-Método	Ruta	Descripción
-GET	/api/products	Listar productos con paginación, filtros y ordenamiento (limit, page, sort, query)
+GET	/api/products	Listar productos con paginación, filtros (query) y ordenamiento (sort)
 GET	/api/products/:pid	Obtener producto por ID
-POST	/api/products	Crear producto
-PUT	/api/products/:pid	Actualizar producto
+POST	/api/products	Crear un nuevo producto
+PUT	/api/products/:pid	Actualizar producto existente
 DELETE	/api/products/:pid	Eliminar producto
 
-Carritos
-Método	Ruta	Descripción
-POST	/api/carts	Crear nuevo carrito
-GET	/api/carts/:cid	Obtener carrito con productos (populate)
-POST	/api/carts/:cid/products/:pid	Agregar producto al carrito
-PUT	/api/carts/:cid/products/:pid	Actualizar cantidad de un producto
-PUT	/api/carts/:cid	Actualizar todo el carrito
-DELETE	/api/carts/:cid/products/:pid	Eliminar un producto
-DELETE	/api/carts/:cid	Vaciar carrito
+- Query params para GET /api/products
 
-Vistas
-/ → Lista de productos.
+limit (opcional, default 10) → cantidad de productos por página.
 
-/realtimeproducts → Productos en tiempo real.
+page (opcional, default 1) → número de página.
 
-/products/:pid → Detalle de producto y agregar al carrito.
+sort (opcional, asc o desc) → ordenamiento por precio.
 
-/carts/:cid → Visualización del carrito.
-
-Socket.IO
-Eventos:
-
-newProduct → Agregar producto
-
-deleteProduct → Eliminar producto
-
-Todos los clientes reciben products para actualizar la vista automáticamente.
+query (opcional) → filtro por categoría (category:Electrónica) o disponibilidad (status:true).
 
 ## 👨‍💻 Autor
-Desarrollado por **Ezequiel Gonzalez**  
+Desarrollado por **Ezequiel Gonzalez**   
